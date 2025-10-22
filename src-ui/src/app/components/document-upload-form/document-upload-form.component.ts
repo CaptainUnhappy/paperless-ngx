@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common'
 import { HttpEventType } from '@angular/common/http'
 import {
   Component,
@@ -54,7 +53,6 @@ import { ComponentWithPermissions } from '../with-permissions/with-permissions.c
     PageHeaderComponent,
     ReactiveFormsModule,
     FormsModule,
-    NgClass,
     NgbAlertModule,
     NgxBootstrapIconsModule,
     IfPermissionsDirective,
@@ -337,7 +335,7 @@ export class DocumentUploadFormComponent
 
     this.toastService.showInfo(
       $localize`Document uploaded successfully`,
-      $localize`The document is being processed. Task ID: ${taskId}`
+      $localize`The document is being processed. Task ID: ${taskId}:INTERPOLATION:`
     )
 
     // Reset form after a short delay
