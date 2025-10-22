@@ -1,0 +1,319 @@
+<pngx-page-header
+  [title]="'Upload Document' | i18n"
+  [subtitle]="'Upload a new document with metadata' | i18n"
+></pngx-page-header>
+
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
+      <div class="card">
+        <div class="card-body">
+          <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+            <!-- File Selection -->
+            <div class="row mb-3">
+              <div class="col">
+                <label for="documentFile" class="form-label">
+                  <i class="bi-file-earmark-arrow-up me-2"></i>
+                  <span i18n>Document File</span>
+                  <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="documentFile"
+                  (change)="onFileSelected($event)"
+                  accept=".pdf,.png,.jpg,.jpeg,.gif,.tiff,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.ods,.odp"
+                  [disabled]="uploading"
+                  required
+                />
+                @if (selectedFile) {
+                  <small class="text-muted">
+                    <i class="bi-check-circle text-success me-1"></i>
+                    <span i18n>Selected:</span> {{ selectedFile.name }}
+                    ({{ selectedFile.size | number }} bytes)
+                  </small>
+                }
+              </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <!-- Basic Metadata -->
+            <h5 class="mb-3">
+              <i class="bi-info-circle me-2"></i>
+              <span i18n>Basic Information</span>
+            </h5>
+
+            <!-- Title -->
+            <div class="row mb-3">
+              <div class="col">
+                <pngx-input-text
+                  i18n-title
+                  title="Title"
+                  formControlName="title"
+                  [disabled]="uploading"
+                  i18n-hint
+                  hint="Leave blank to auto-generate from filename"
+                ></pngx-input-text>
+              </div>
+            </div>
+
+            <!-- Created Date -->
+            <div class="row mb-3">
+              <div class="col">
+                <pngx-input-date
+                  i18n-title
+                  title="Created Date"
+                  formControlName="created"
+                  [disabled]="uploading"
+                  i18n-hint
+                  hint="Leave blank to use today's date"
+                ></pngx-input-date>
+              </div>
+            </div>
+
+            <!-- Archive Serial Number -->
+            <div class="row mb-3">
+              <div class="col">
+                <pngx-input-number
+                  i18n-title
+                  title="Archive Serial Number (ASN)"
+                  formControlName="archive_serial_number"
+                  [disabled]="uploading"
+                  i18n-hint
+                  hint="Optional archive serial number"
+                ></pngx-input-number>
+              </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <!-- Classification -->
+            <h5 class="mb-3">
+              <i class="bi-tags me-2"></i>
+              <span i18n>Classification</span>
+            </h5>
+
+            <!-- Correspondent -->
+            <div class="row mb-3">
+              <div class="col">
+                <pngx-input-select
+                  i18n-title
+                  title="Correspondent"
+                  formControlName="correspondent"
+                  [items]="correspondents"
+                  [disabled]="uploading"
+                  [allowNull]="true"
+                  i18n-hint
+                  hint="Select the sender or source of the document"
+                ></pngx-input-select>
+              </div>
+            </div>
+
+            <!-- Document Type -->
+            <div class="row mb-3">
+              <div class="col">
+                <pngx-input-select
+                  i18n-title
+                  title="Document Type"
+                  formControlName="document_type"
+                  [items]="documentTypes"
+                  [disabled]="uploading"
+                  [allowNull]="true"
+                  i18n-hint
+                  hint="Select the type of document"
+                ></pngx-input-select>
+              </div>
+            </div>
+
+            <!-- Storage Path -->
+            <div class="row mb-3">
+              <div class="col">
+                <pngx-input-select
+                  i18n-title
+                  title="Storage Path"
+                  formControlName="storage_path"
+                  [items]="storagePaths"
+                  [disabled]="uploading"
+                  [allowNull]="true"
+                  i18n-hint
+                  hint="Select where the document should be stored"
+                ></pngx-input-select>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="row mb-3">
+              <div class="col">
+                <pngx-input-tags
+                  i18n-title
+                  title="Tags"
+                  formControlName="tags"
+                  [disabled]="uploading"
+                  i18n-hint
+                  hint="Select one or more tags"
+                ></pngx-input-tags>
+              </div>
+            </div>
+
+            <!-- Custom Fields -->
+            @if (customFields.length > 0) {
+              <hr class="my-4" />
+              <h5 class="mb-3">
+                <i class="bi-sliders me-2"></i>
+                <span i18n>Custom Fields</span>
+              </h5>
+
+              <div formGroupName="custom_fields">
+                @for (field of customFields; track field.id) {
+                  <div class="row mb-3">
+                    <div class="col">
+                      @switch (field.data_type) {
+                        @case (CustomFieldDataType.String) {
+                          <pngx-input-text
+                            [title]="field.name"
+                            [formControlName]="field.id.toString()"
+                            [disabled]="uploading"
+                          ></pngx-input-text>
+                        }
+                        @case (CustomFieldDataType.Url) {
+                          <pngx-input-url
+                            [title]="field.name"
+                            [formControlName]="field.id.toString()"
+                            [disabled]="uploading"
+                          ></pngx-input-url>
+                        }
+                        @case (CustomFieldDataType.Date) {
+                          <pngx-input-date
+                            [title]="field.name"
+                            [formControlName]="field.id.toString()"
+                            [disabled]="uploading"
+                          ></pngx-input-date>
+                        }
+                        @case (CustomFieldDataType.Boolean) {
+                          <pngx-input-check
+                            [title]="field.name"
+                            [formControlName]="field.id.toString()"
+                            [disabled]="uploading"
+                          ></pngx-input-check>
+                        }
+                        @case (CustomFieldDataType.Integer) {
+                          <pngx-input-number
+                            [title]="field.name"
+                            [formControlName]="field.id.toString()"
+                            [disabled]="uploading"
+                          ></pngx-input-number>
+                        }
+                        @case (CustomFieldDataType.Float) {
+                          <pngx-input-number
+                            [title]="field.name"
+                            [formControlName]="field.id.toString()"
+                            [disabled]="uploading"
+                            [step]="0.01"
+                          ></pngx-input-number>
+                        }
+                        @case (CustomFieldDataType.Monetary) {
+                          <pngx-input-monetary
+                            [title]="field.name"
+                            [formControlName]="field.id.toString()"
+                            [disabled]="uploading"
+                          ></pngx-input-monetary>
+                        }
+                        @default {
+                          <pngx-input-text
+                            [title]="field.name"
+                            [formControlName]="field.id.toString()"
+                            [disabled]="uploading"
+                          ></pngx-input-text>
+                        }
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            <hr class="my-4" />
+
+            <!-- Error Alert -->
+            @if (uploadError) {
+              <ngb-alert
+                type="danger"
+                [dismissible]="true"
+                (closed)="uploadError = null"
+              >
+                <i class="bi-exclamation-triangle-fill me-2"></i>
+                <span i18n>Error:</span> {{ uploadError }}
+              </ngb-alert>
+            }
+
+            <!-- Success Alert -->
+            @if (uploadSuccess) {
+              <ngb-alert type="success" [dismissible]="false">
+                <i class="bi-check-circle-fill me-2"></i>
+                <span i18n
+                  >Document uploaded successfully and is being processed!</span
+                >
+              </ngb-alert>
+            }
+
+            <!-- Upload Progress -->
+            @if (uploading) {
+              <div class="mb-3">
+                <label class="form-label">
+                  <span i18n>Upload Progress</span>
+                </label>
+                <div class="progress" style="height: 25px">
+                  <div
+                    class="progress-bar progress-bar-striped progress-bar-animated"
+                    role="progressbar"
+                    [style.width.%]="uploadProgress"
+                    [attr.aria-valuenow]="uploadProgress"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  >
+                    {{ uploadProgress }}%
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2 justify-content-end">
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="onCancel()"
+                [disabled]="uploading"
+              >
+                <i class="bi-x-circle me-2"></i>
+                <span i18n>Cancel</span>
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="uploadForm.invalid || uploading || !selectedFile"
+                *pngxIfPermissions="{
+                  action: PermissionAction.Add,
+                  type: PermissionType.Document
+                }"
+              >
+                @if (uploading) {
+                  <span
+                    class="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  <span i18n>Uploading...</span>
+                } @else {
+                  <i class="bi-cloud-upload me-2"></i>
+                  <span i18n>Upload Document</span>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

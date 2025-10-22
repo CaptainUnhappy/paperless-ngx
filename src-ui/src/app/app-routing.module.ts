@@ -11,6 +11,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component'
 import { DocumentAsnComponent } from './components/document-asn/document-asn.component'
 import { DocumentDetailComponent } from './components/document-detail/document-detail.component'
 import { DocumentListComponent } from './components/document-list/document-list.component'
+import { DocumentUploadFormComponent } from './components/document-upload-form/document-upload-form.component'
 import { CorrespondentListComponent } from './components/manage/correspondent-list/correspondent-list.component'
 import { CustomFieldsComponent } from './components/manage/custom-fields/custom-fields.component'
 import { DocumentTypeListComponent } from './components/manage/document-type-list/document-type-list.component'
@@ -41,6 +42,18 @@ export const routes: Routes = [
         component: DashboardComponent,
         data: {
           componentName: 'AppFrameComponent',
+        },
+      },
+      {
+        path: 'upload',
+        component: DocumentUploadFormComponent,
+        canActivate: [PermissionsGuard],
+        data: {
+          requiredPermission: {
+            action: PermissionAction.Add,
+            type: PermissionType.Document,
+          },
+          componentName: 'DocumentUploadFormComponent',
         },
       },
       {
