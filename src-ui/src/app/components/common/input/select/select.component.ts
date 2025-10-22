@@ -38,6 +38,7 @@ export class SelectComponent extends AbstractInputComponent<number> {
   constructor() {
     super()
     this.addItemRef = this.addItem.bind(this)
+    this.compareWithRef = this.compareWith.bind(this)
   }
 
   _items: any[]
@@ -118,6 +119,8 @@ export class SelectComponent extends AbstractInputComponent<number> {
   filterDocuments = new EventEmitter<any[]>()
 
   public addItemRef: (name) => void
+
+  public compareWithRef: (item: any, selected: any) => boolean
 
   private _lastSearchTerm: string
 
