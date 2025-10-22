@@ -334,8 +334,7 @@ export class DocumentUploadFormComponent
     this.uploadSuccess = true
 
     this.toastService.showInfo(
-      $localize`Document uploaded successfully`,
-      $localize`The document is being processed. Task ID: ${taskId}:INTERPOLATION:`
+      $localize`Document uploaded successfully and is being processed`
     )
 
     // Reset form after a short delay
