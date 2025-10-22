@@ -171,4 +171,13 @@ export class SelectComponent extends AbstractInputComponent<number> {
   get filterButtonTitle() {
     return $localize`Filter documents with this ${this.title}`
   }
+
+  compareWith(item: any, selected: any) {
+    // Custom comparison function to handle type coercion between string and number
+    if (item == null || selected == null) {
+      return item === selected
+    }
+    // Use loose equality to allow '1' == 1
+    return item == selected
+  }
 }

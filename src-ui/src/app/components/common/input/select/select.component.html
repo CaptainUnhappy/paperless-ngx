@@ -29,6 +29,8 @@
           [multiple]="multiple"
           [bindLabel]="bindLabel"
           bindValue="id"
+          [closeOnSelect]="true"
+          [compareWith]="compareWith"
           (change)="onChange(value)"
           (search)="onSearch($event)"
           (focus)="clearLastSearchTerm()"
