@@ -75,8 +75,7 @@ target/
 virtualenv
 /venv
 .venv/
-/docker-compose.env
-/docker-compose.yml
+
 .ruff_cache/
 
 # Used for development
@@ -110,3 +109,6 @@ celerybeat-schedule*
 
 # ignore pnpm package store folder created when setting up the devcontainer
 .pnpm-store/
+
+.claude
+CLAUDE.md
