@@ -83,6 +83,29 @@ ngb-alert {
   border-width: 0.15rem;
 }
 
+// Required field indicator
+::ng-deep .form-label:has(+ :required),
+::ng-deep label:has(+ :required) {
+  &::after {
+    content: ' *';
+    color: var(--bs-danger);
+    font-weight: bold;
+  }
+}
+
+// Custom field validation
+.ng-invalid.ng-touched {
+  border-color: var(--bs-danger);
+}
+
+// Error message styling
+.invalid-feedback {
+  display: block;
+  color: var(--bs-danger);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
 // Responsive adjustments
 @media (max-width: 768px) {
   .card-body {

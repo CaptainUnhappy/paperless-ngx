@@ -173,42 +173,42 @@
                       @switch (field.data_type) {
                         @case (CustomFieldDataType.String) {
                           <pngx-input-text
-                            [title]="field.name"
+                            [title]="getFieldTitle(field)"
                             [formControlName]="field.id.toString()"
                             [disabled]="uploading"
                           ></pngx-input-text>
                         }
                         @case (CustomFieldDataType.Url) {
                           <pngx-input-url
-                            [title]="field.name"
+                            [title]="getFieldTitle(field)"
                             [formControlName]="field.id.toString()"
                             [disabled]="uploading"
                           ></pngx-input-url>
                         }
                         @case (CustomFieldDataType.Date) {
                           <pngx-input-date
-                            [title]="field.name"
+                            [title]="getFieldTitle(field)"
                             [formControlName]="field.id.toString()"
                             [disabled]="uploading"
                           ></pngx-input-date>
                         }
                         @case (CustomFieldDataType.Boolean) {
                           <pngx-input-check
-                            [title]="field.name"
+                            [title]="getFieldTitle(field)"
                             [formControlName]="field.id.toString()"
                             [disabled]="uploading"
                           ></pngx-input-check>
                         }
                         @case (CustomFieldDataType.Integer) {
                           <pngx-input-number
-                            [title]="field.name"
+                            [title]="getFieldTitle(field)"
                             [formControlName]="field.id.toString()"
                             [disabled]="uploading"
                           ></pngx-input-number>
                         }
                         @case (CustomFieldDataType.Float) {
                           <pngx-input-number
-                            [title]="field.name"
+                            [title]="getFieldTitle(field)"
                             [formControlName]="field.id.toString()"
                             [disabled]="uploading"
                             [step]="0.01"
@@ -216,14 +216,23 @@
                         }
                         @case (CustomFieldDataType.Monetary) {
                           <pngx-input-monetary
-                            [title]="field.name"
+                            [title]="getFieldTitle(field)"
                             [formControlName]="field.id.toString()"
                             [disabled]="uploading"
                           ></pngx-input-monetary>
                         }
+                        @case (CustomFieldDataType.Select) {
+                          <pngx-input-select
+                            [title]="getFieldTitle(field)"
+                            [formControlName]="field.id.toString()"
+                            [items]="getSelectOptions(field)"
+                            [disabled]="uploading"
+                            [allowNull]="!isCustomFieldRequired(field)"
+                          ></pngx-input-select>
+                        }
                         @default {
                           <pngx-input-text
-                            [title]="field.name"
+                            [title]="getFieldTitle(field)"
                             [formControlName]="field.id.toString()"
                             [disabled]="uploading"
                           ></pngx-input-text>

@@ -213,7 +213,12 @@ export class DocumentUploadFormComponent
     const customFieldsGroup = this.uploadForm.get('custom_fields') as FormGroup
 
     this.customFields.forEach((field) => {
-      const control = this.fb.control('')
+      // 标记特定字段为必填
+      const isRequired = this.isCustomFieldRequired(field)
+      const control = this.fb.control(
+        '',
+        isRequired ? Validators.required : []
+      )
       customFieldsGroup.addControl(field.id.toString(), control)
     })
   }
@@ -374,5 +379,32 @@ export class DocumentUploadFormComponent
 
   getCustomFieldType(field: CustomField): string {
     return CustomFieldDataType[field.data_type]
+  }
+
+  getFieldTitle(field: CustomField): string {
+    // 为必填字段添加红色星号
+    return this.isCustomFieldRequired(field)
+      ? `${field.name} *`
+      : field.name
+  }
+
+  isCustomFieldRequired(field: CustomField): boolean {
+    // 根据字段名称判断是否必填
+    const requiredFieldNames = ['外部公司主体', '内部公司主体']
+    return requiredFieldNames.includes(field.name)
+  }
+
+  getSelectOptions(field: CustomField): any[] {
+    // 获取选择字段的选项
+    if (
+      field.data_type === CustomFieldDataType.Select &&
+      field.extra_data?.select_options
+    ) {
+      return field.extra_data.select_options.map((option) => ({
+        id: option.id,
+        name: option.label,
+      }))
+    }
+    return []
   }
 }
